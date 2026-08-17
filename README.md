@@ -3,7 +3,7 @@
 Este repositorio contiene la entrega del proyecto de integración de plataformas para la automatización del proceso de ventas de Mapuescuela.
 
 ## 👥 Equipo de Trabajo
-* **[TU NOMBRE AQUÍ]**: Líder BPMN & Flowable (Modelado de procesos, diagramas AS-IS / TO-BE y automatización).
+* **Felipe Fernandoi**: Líder BPMN & Flowable (Modelado de procesos, diagramas AS-IS / TO-BE y automatización).
 * **Andrés Araya**: Líder Backend & Gestión (Desarrollo de API REST y base de datos).
 
 ## 📂 Estructura del Proyecto
