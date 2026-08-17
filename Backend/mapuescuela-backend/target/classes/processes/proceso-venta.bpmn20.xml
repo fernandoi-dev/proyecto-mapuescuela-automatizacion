@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:flowable="http://flowable.org/bpmn"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
+             typeLanguage="http://www.w3.org/2001/XMLSchema"
+             expressionLanguage="http://www.w3.org/1999/XPath"
+             targetNamespace="http://www.mapuescuela.cl/procesos">
+
+    <process id="procesoVenta" name="Proceso de venta Mapuescuela" isExecutable="true">
+
+        <startEvent id="inicio" name="Inicio"/>
+        <sequenceFlow id="flow1" sourceRef="inicio" targetRef="pedidoGenerado"/>
+
+        <serviceTask id="pedidoGenerado"
+                     name="Pedido generado"
+                     flowable:delegateExpression="${pedidoGeneradoDelegate}"/>
+        <sequenceFlow id="flow2" sourceRef="pedidoGenerado" targetRef="esperarComprobante"/>
+
+        <userTask id="esperarComprobante" name="Esperar comprobante"/>
+
+        <!-- Para una demo en clases puedes cambiar PT24H por PT5M -->
+        <boundaryEvent id="timer24h" name="24 horas" attachedToRef="esperarComprobante" cancelActivity="true">
+            <timerEventDefinition>
+                <timeDuration>PT24H</timeDuration>
+            </timerEventDefinition>
+        </boundaryEvent>
+        <sequenceFlow id="flowTimeout" sourceRef="timer24h" targetRef="cancelarPorTimeout"/>
+
+        <serviceTask id="cancelarPorTimeout"
+                     name="Cancelar pedido"
+                     flowable:delegateExpression="${cancelarPedidoDelegate}"/>
+        <sequenceFlow id="flowTimeoutFin" sourceRef="cancelarPorTimeout" targetRef="finTimeout"/>
+        <endEvent id="finTimeout" name="Fin"/>
+
+        <sequenceFlow id="flow3" sourceRef="esperarComprobante" targetRef="revisarComprobante"/>
+
+        <userTask id="revisarComprobante" name="Revisar comprobante"/>
+        <sequenceFlow id="flow4" sourceRef="revisarComprobante" targetRef="gatewayPago"/>
+
+        <exclusiveGateway id="gatewayPago" name="¿Pago aprobado?" default="flowRechazo"/>
+
+        <sequenceFlow id="flowAprobado" sourceRef="gatewayPago" targetRef="prepararPedido">
+            <conditionExpression xsi:type="tFormalExpression">${pagoAprobado == true}</conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="flowRechazo" sourceRef="gatewayPago" targetRef="cancelarPedido"/>
+
+        <serviceTask id="prepararPedido"
+                     name="Preparar pedido"
+                     flowable:delegateExpression="${prepararPedidoDelegate}"/>
+        <sequenceFlow id="flow5" sourceRef="prepararPedido" targetRef="finAprobado"/>
+        <endEvent id="finAprobado" name="Fin"/>
+
+        <serviceTask id="cancelarPedido"
+                     name="Cancelar"
+                     flowable:delegateExpression="${cancelarPedidoDelegate}"/>
+        <sequenceFlow id="flow6" sourceRef="cancelarPedido" targetRef="finRechazado"/>
+        <endEvent id="finRechazado" name="Fin"/>
+    </process>
+</definitions>
