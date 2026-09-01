@@ -1,0 +1,187 @@
+{
+  "info": {
+    "name": "Mapuescuela Backend",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "pedidoId",
+      "value": "1"
+    }
+  ],
+  "item": [
+    {
+      "name": "Productos",
+      "item": [
+        {
+          "name": "GET productos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/productos"
+          }
+        },
+        {
+          "name": "POST producto de prueba",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"nombre\": \"Libro usado\",\n    \"descripcion\": \"Libro en buen estado\",\n    \"categoria\": \"Libros\",\n    \"precio\": 5000,\n    \"stock\": 1,\n    \"estado\": \"Disponible\"\n}"
+            },
+            "url": "{{baseUrl}}/productos"
+          }
+        },
+        {
+          "name": "GET producto por id",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/productos/1"
+          }
+        },
+        {
+          "name": "PUT producto",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"nombre\": \"Libro usado\",\n    \"descripcion\": \"Libro en buen estado\",\n    \"categoria\": \"Libros\",\n    \"precio\": 4500,\n    \"stock\": 2,\n    \"estado\": \"Disponible\"\n}"
+            },
+            "url": "{{baseUrl}}/productos/1"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Clientes",
+      "item": [
+        {
+          "name": "GET clientes",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/clientes"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Pedidos",
+      "item": [
+        {
+          "name": "POST pedidos",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"clienteId\": 1,\n    \"modalidadEntrega\": \"RETIRO\",\n    \"productos\": [\n        {\n            \"productoId\": 1,\n            \"cantidad\": 1\n        }\n    ]\n}"
+            },
+            "url": "{{baseUrl}}/pedidos"
+          }
+        },
+        {
+          "name": "POST comprobante",
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "archivo",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": "{{baseUrl}}/pedidos/{{pedidoId}}/comprobante"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "item": [
+        {
+          "name": "GET admin pedidos",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/admin/pedidos"
+          }
+        },
+        {
+          "name": "GET admin pedido detalle",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/admin/pedidos/{{pedidoId}}"
+          }
+        },
+        {
+          "name": "POST aprobar pago",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/admin/pedidos/{{pedidoId}}/aprobar-pago"
+          }
+        },
+        {
+          "name": "POST rechazar pago",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/admin/pedidos/{{pedidoId}}/rechazar-pago"
+          }
+        },
+        {
+          "name": "POST preparar retiro",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/admin/pedidos/{{pedidoId}}/preparar"
+          }
+        },
+        {
+          "name": "POST preparar despacho",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"empresaTransporte\": \"Chilexpress\",\n    \"numeroSeguimiento\": \"ABC123\"\n}"
+            },
+            "url": "{{baseUrl}}/admin/pedidos/{{pedidoId}}/preparar"
+          }
+        },
+        {
+          "name": "POST finalizar",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/admin/pedidos/{{pedidoId}}/finalizar"
+          }
+        }
+      ]
+    }
+  ]
+}
