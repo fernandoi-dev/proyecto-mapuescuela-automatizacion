@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrar Pedido - Mapuescuela</title>
+    <!-- Cargamos Bootstrap para el diseño -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <div class="container mt-5">
+        <div class="card shadow-sm max-w-md mx-auto">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Registrar pedido e informar datos bancarios</h4>
+            </div>
+            <div class="card-body">
+                <form id="formularioPedido">
+                    <div class="mb-3">
+                        <label class="form-label">Nombre Cliente</label>
+                        <input type="text" class="form-control" id="nombreCliente" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Correo Cliente</label>
+                        <input type="email" class="form-control" id="correoCliente" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Monto total a transferir ($)</label>
+                        <input type="number" class="form-control" id="montoTotal" required>
+                    </div>
+                    <button type="submit" class="btn btn-success w-100">Registrar y Continuar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('formularioPedido').addEventListener('submit', function(e) {
+            e.preventDefault(); // Evita que la página recargue
+            
+            // Recolectamos los datos
+            const datos = {
+                nombre: document.getElementById('nombreCliente').value,
+                correo: document.getElementById('correoCliente').value,
+                monto: document.getElementById('montoTotal').value
+            };
+
+            console.log("Enviando datos al backend de Andrés...", datos);
+            alert("Simulación: Datos enviados al backend de Spring Boot.");
+            
+            // Aquí irá el código Fetch (POST) hacia el backend cuando Andrés te dé la URL
+        });
+    </script>
+</body>
+</html>
