@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adjuntar Comprobante - Mapuescuela</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <style>
+        body {
+            background-color: #e0e5ec;
+            font-family: 'Nunito', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modern-card {
+            background-color: #e0e5ec;
+            border-radius: 24px;
+            border: none;
+            box-shadow: 9px 9px 16px rgb(163,177,198,0.6), -9px -9px 16px rgba(255,255,255, 0.5);
+            padding: 2.5rem 2rem;
+            width: 100%;
+            max-width: 480px;
+        }
+        .brand-logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #22c55e;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .modern-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: #4a5568;
+        }
+        .modern-input {
+            background-color: #e0e5ec;
+            border: none;
+            border-radius: 12px;
+            padding: 12px 15px;
+            color: #4a5568;
+            box-shadow: inset 6px 6px 10px 0 rgba(163,177,198, 0.7), inset -6px -6px 10px 0 rgba(255,255,255, 0.8);
+        }
+        .modern-input:focus {
+            background-color: #e0e5ec;
+            box-shadow: inset 4px 4px 8px 0 rgba(163,177,198, 0.7), inset -4px -4px 8px 0 rgba(255,255,255, 0.8);
+            outline: none;
+        }
+        .modern-label {
+            font-weight: 700;
+            color: #718096;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+        .modern-alert {
+            background-color: #e0e5ec;
+            border: none;
+            border-radius: 12px;
+            color: #d97706;
+            font-size: 0.85rem;
+            padding: 12px;
+            box-shadow: inset 4px 4px 8px 0 rgba(163,177,198, 0.5), inset -4px -4px 8px 0 rgba(255,255,255, 0.8);
+            margin-bottom: 1.5rem;
+        }
+        .modern-btn {
+            background-color: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 12px;
+            font-weight: 700;
+            box-shadow: 6px 6px 10px 0 rgba(163,177,198, 0.6), -6px -6px 10px 0 rgba(255,255,255, 0.5);
+            transition: all 0.2s ease-in-out;
+        }
+        .modern-btn:hover {
+            background-color: #2563eb;
+            transform: translateY(2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="modern-card">
+        <div class="brand-logo">
+            <i class="bi bi-shop"></i> Mapuescuela
+        </div>
+
+        <div class="modern-header">
+            <h4 class="fw-bold">Adjuntar Comprobante</h4>
+            <p class="text-muted small">Sube la imagen de tu transferencia</p>
+        </div>
+
+        <div class="modern-alert">
+            <i class="bi bi-clock-history me-1"></i> <strong>Aviso:</strong> Plazo máximo de 24 horas antes de la cancelación automática del sistema.
+        </div>
+        
+        <form id="formularioComprobante">
+            <div class="mb-4">
+                <label class="modern-label">Número de Pedido</label>
+                <input type="text" class="form-control modern-input" value="PED-2026-01" disabled>
+            </div>
+            <div class="mb-4">
+                <label class="modern-label"><i class="bi bi-file-earmark-image me-2"></i>Comprobante de Pago</label>
+                <input class="form-control modern-input" type="file" id="archivoComprobante" accept="image/*" required>
+            </div>
+            <button type="submit" class="w-100 modern-btn mt-2">Enviar Comprobante</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('formularioComprobante').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert("Simulación: Comprobante enviado para validación del voluntario.");
+        });
+    </script>
+</body>
+</html>
