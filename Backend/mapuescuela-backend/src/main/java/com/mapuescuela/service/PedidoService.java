@@ -68,7 +68,8 @@ public class PedidoService {
         pedido.setTotal(total);
         pedido = pedidoRepository.saveAndFlush(pedido);
 
-        String processInstanceId = flowableProcessService.iniciarProcesoVenta(pedido.getId());
+        String processInstanceId = flowableProcessService.iniciarProcesoVenta(
+                pedido.getId(), pedido.getModalidadEntrega());
         pedido.setProcessInstanceId(processInstanceId);
         pedidoRepository.save(pedido);
 

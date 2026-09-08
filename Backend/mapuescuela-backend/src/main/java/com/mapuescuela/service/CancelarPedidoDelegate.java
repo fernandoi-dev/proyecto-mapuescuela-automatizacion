@@ -27,7 +27,7 @@ public class CancelarPedidoDelegate implements JavaDelegate {
 
         pedido.setEstado(EstadoPedido.CANCELADO);
         pedidoRepository.save(pedido);
-        log.info("Pedido {} cancelado por Flowable", pedidoId);
+        log.info("Pedido {} cancelado por Flowable (definición anterior procesoVenta)", pedidoId);
     }
 
     private Long toLong(Object valor) {

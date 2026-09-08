@@ -28,4 +28,18 @@ public class ApiExceptionHandler {
                 .collect(Collectors.joining(", "));
         return ResponseEntity.badRequest().body(Map.of("error", detalle));
     }
+
+    @ExceptionHandler(org.springframework.http.converter.HttpMessageNotReadableException.class)
+    public ResponseEntity<Map<String, String>> bodyFaltante() {
+        return ResponseEntity.badRequest().body(Map.of(
+                "error", "Falta el JSON. En Postman usa Body -> raw -> JSON."
+        ));
+    }
+
+    @ExceptionHandler(org.springframework.web.HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<Map<String, String>> metodoNoSoportado() {
+        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(Map.of(
+                "error", "Esta URL no acepta GET. Abre http://localhost:8080 para usar los botones."
+        ));
+    }
 }

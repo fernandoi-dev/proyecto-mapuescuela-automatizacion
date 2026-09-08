@@ -13,10 +13,8 @@ import com.mapuescuela.model.Despacho;
 import com.mapuescuela.model.EstadoPedido;
 import com.mapuescuela.model.ModalidadEntrega;
 import com.mapuescuela.model.Pedido;
-import com.mapuescuela.model.Producto;
 import com.mapuescuela.repository.DespachoRepository;
 import com.mapuescuela.repository.PedidoRepository;
-import com.mapuescuela.repository.ProductoRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +26,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class AdminPedidoService {
 
     private final PedidoRepository pedidoRepository;
-    private final ProductoRepository productoRepository;
     private final DespachoRepository despachoRepository;
     private final FlowableProcessService flowableProcessService;
     private final ArchivoStorageService archivoStorageService;
@@ -57,18 +54,6 @@ public class AdminPedidoService {
 
         if (pedido.getEstado() != EstadoPedido.PAGO_EN_REVISION) {
             throw new ReglaNegocioException("Solo se puede aprobar un pedido en PAGO_EN_REVISION");
-        }
-
-        for (var detalle : pedido.getDetalles()) {
-            Producto producto = detalle.getProducto();
-            if (producto.getStock() < detalle.getCantidad()) {
-                throw new ReglaNegocioException("Stock insuficiente al aprobar el pago de '" + producto.getNombre() + "'");
-            }
-            producto.setStock(producto.getStock() - detalle.getCantidad());
-            if (producto.getStock() == 0) {
-                producto.setEstado("Retirado");
-            }
-            productoRepository.save(producto);
         }
 
         if (pedido.getComprobante() != null) {
@@ -107,8 +92,7 @@ public class AdminPedidoService {
         Pedido pedido = pedidoRepository.findDetalleById(id)
                 .orElseThrow(() -> new RecursoNoEncontradoException("Pedido no encontrado: " + id));
 
-        if (pedido.getEstado() != EstadoPedido.EN_PREPARACION
-                && pedido.getEstado() != EstadoPedido.PAGO_APROBADO) {
+        if (pedido.getEstado() != EstadoPedido.EN_PREPARACION) {
             throw new ReglaNegocioException("El pedido debe estar EN_PREPARACION para gestionar la entrega");
         }
 
@@ -135,6 +119,7 @@ public class AdminPedidoService {
         }
 
         pedidoRepository.save(pedido);
+        flowableProcessService.completarEntrega(pedido.getProcessInstanceId(), pedido.getModalidadEntrega());
         return obtener(id);
     }
 
