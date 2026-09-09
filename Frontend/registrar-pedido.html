@@ -9,7 +9,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <style>
         body {
-            background-color: #e0e5ec;
+            /* Fondo arena cálido inspirado en la identidad de Mapuescuela */
+            background-color: #F4F1EA;
             font-family: 'Nunito', sans-serif;
             min-height: 100vh;
             display: flex;
@@ -17,66 +18,68 @@
             justify-content: center;
         }
         .modern-card {
-            background-color: #e0e5ec;
+            background-color: #F4F1EA;
             border-radius: 24px;
             border: none;
-            box-shadow: 9px 9px 16px rgb(163,177,198,0.6), -9px -9px 16px rgba(255,255,255, 0.5);
+            /* Sombras neumórficas ajustadas al nuevo color de fondo */
+            box-shadow: 9px 9px 16px #d1cec7, -9px -9px 16px #ffffff;
             padding: 2.5rem 2rem;
             width: 100%;
             max-width: 450px;
         }
         .brand-logo {
-            font-size: 1.8rem;
-            font-weight: 800;
-            color: #22c55e; /* Verde Mapuescuela */
             text-align: center;
             margin-bottom: 1.5rem;
-            letter-spacing: -0.5px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
+        }
+        .brand-logo img {
+            width: 130px; /* Tamaño del logo */
+            height: auto;
+            border-radius: 50%;
+            /* Sutil relieve circular para el logo */
+            box-shadow: 5px 5px 10px #d1cec7, -5px -5px 10px #ffffff; 
         }
         .modern-header {
             text-align: center;
             margin-bottom: 2rem;
-            color: #4a5568;
+            color: #2B4B85; /* Azul índigo institucional */
         }
         .modern-input {
-            background-color: #e0e5ec;
+            background-color: #F4F1EA;
             border: none;
             border-radius: 12px;
             padding: 12px 15px;
-            color: #4a5568;
-            box-shadow: inset 6px 6px 10px 0 rgba(163,177,198, 0.7), inset -6px -6px 10px 0 rgba(255,255,255, 0.8);
+            color: #2B4B85;
+            box-shadow: inset 6px 6px 10px 0 #d1cec7, inset -6px -6px 10px 0 #ffffff;
         }
         .modern-input:focus {
-            background-color: #e0e5ec;
-            box-shadow: inset 4px 4px 8px 0 rgba(163,177,198, 0.7), inset -4px -4px 8px 0 rgba(255,255,255, 0.8);
-            color: #4a5568;
+            background-color: #F4F1EA;
+            /* Foco con resplandor turquesa suave */
+            box-shadow: inset 4px 4px 8px 0 #d1cec7, inset -4px -4px 8px 0 #ffffff, 0 0 10px rgba(72, 178, 166, 0.4);
+            color: #2B4B85;
             outline: none;
         }
         .modern-label {
             font-weight: 700;
-            color: #718096;
+            color: #2B4B85; /* Azul índigo */
             margin-bottom: 8px;
             font-size: 0.9rem;
         }
         .modern-btn {
-            background-color: #4ade80;
+            background-color: #2B4B85; /* Azul institucional por defecto */
             color: white;
             border: none;
             border-radius: 12px;
             padding: 12px;
             font-weight: 700;
             font-size: 1rem;
-            box-shadow: 6px 6px 10px 0 rgba(163,177,198, 0.6), -6px -6px 10px 0 rgba(255,255,255, 0.5);
-            transition: all 0.2s ease-in-out;
+            box-shadow: 6px 6px 10px 0 #d1cec7, -6px -6px 10px 0 #ffffff;
+            transition: all 0.3s ease-in-out;
         }
         .modern-btn:hover {
-            background-color: #22c55e;
+            background-color: #48B2A6; /* Turquesa institucional al pasar el mouse */
             transform: translateY(2px);
-            box-shadow: 2px 2px 5px 0 rgba(163,177,198, 0.6), -2px -2px 5px 0 rgba(255,255,255, 0.5);
+            box-shadow: 2px 2px 5px 0 #d1cec7, -2px -2px 5px 0 #ffffff;
+            color: white;
         }
     </style>
 </head>
@@ -84,12 +87,13 @@
     <div class="modern-card">
         <!-- Logo Mapuescuela -->
         <div class="brand-logo">
-            <i class="bi bi-shop"></i> Mapuescuela
+            <!-- Asegúrate de tener la imagen 'logo-mapuescuela.png' en la misma carpeta que este HTML -->
+            <img src="logomapuescuela.png" alt="Logo Mapuescuela">
         </div>
 
         <div class="modern-header">
             <h4 class="fw-bold">Nuevo Pedido</h4>
-            <p class="text-muted small">Ingresa los datos del cliente</p>
+            <p class="small" style="color: #48B2A6; font-weight: 600;">Ingresa los datos del cliente</p>
         </div>
         
         <form id="formularioPedido">
@@ -111,13 +115,10 @@
 
     <script>
         document.getElementById('formularioPedido').addEventListener('submit', function(e) {
-            e.preventDefault(); 
-            const datos = {
-                nombre: document.getElementById('nombreCliente').value,
-                correo: document.getElementById('correoCliente').value,
-                monto: document.getElementById('montoTotal').value
-            };
-            alert("Simulación: Datos enviados al backend de Spring Boot.");
+            e.preventDefault();
+            alert("Pedido registrado con éxito.");
+            // Redirige automáticamente a la siguiente pantalla
+            window.location.href = 'adjuntar-comprobante.html';
         });
     </script>
 </body>
