@@ -1,18 +1,13 @@
-<!DOCTYPE html>
+<<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<<<<<<< HEAD
     <title>Revisar Pago - Mapuescuela</title>
-=======
-    <title>Revisar Comprobante - Mapuescuela</title>
->>>>>>> 775757d11697b447e61d39822c1ca5ed955fc855
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <style>
-<<<<<<< HEAD
         body { background-color: #F4F1EA; font-family: 'Nunito', sans-serif; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
         .modern-card { background-color: #F4F1EA; border-radius: 24px; border: none; box-shadow: 9px 9px 16px #d1cec7, -9px -9px 16px #ffffff; padding: 2.5rem 2rem; width: 100%; max-width: 450px; }
         .brand-logo { text-align: center; margin-bottom: 1.5rem; }
@@ -28,68 +23,10 @@
         /* Botón secundario para rechazar */
         .modern-btn-outline { background-color: transparent; color: #e63946; border: 2px solid #e63946; border-radius: 12px; padding: 10px; font-weight: 700; transition: all 0.3s; }
         .modern-btn-outline:hover { background-color: #e63946; color: white; box-shadow: 4px 4px 8px #d1cec7, -4px -4px 8px #ffffff; }
-=======
-        body {
-            background-color: #e0e5ec;
-            font-family: 'Nunito', sans-serif;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .modern-card {
-            background-color: #e0e5ec;
-            border-radius: 24px;
-            border: none;
-            box-shadow: 9px 9px 16px rgb(163,177,198,0.6), -9px -9px 16px rgba(255,255,255, 0.5);
-            padding: 2.5rem 2rem;
-            width: 100%;
-            max-width: 500px;
-        }
-        .brand-logo {
-            font-size: 1.8rem;
-            font-weight: 800;
-            color: #22c55e;
-            text-align: center;
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-        .info-box {
-            background-color: #e0e5ec;
-            border-radius: 12px;
-            padding: 15px;
-            box-shadow: inset 5px 5px 10px 0 rgba(163,177,198, 0.6), inset -5px -5px 10px 0 rgba(255,255,255, 0.8);
-            margin-bottom: 1.5rem;
-            color: #4a5568;
-            font-size: 0.9rem;
-        }
-        .btn-approve {
-            background-color: #22c55e;
-            color: white;
-            border: none;
-            border-radius: 12px;
-            padding: 12px;
-            font-weight: 700;
-            box-shadow: 6px 6px 10px 0 rgba(163,177,198, 0.6), -6px -6px 10px 0 rgba(255,255,255, 0.5);
-        }
-        .btn-reject {
-            background-color: #ef4444;
-            color: white;
-            border: none;
-            border-radius: 12px;
-            padding: 12px;
-            font-weight: 700;
-            box-shadow: 6px 6px 10px 0 rgba(163,177,198, 0.6), -6px -6px 10px 0 rgba(255,255,255, 0.5);
-        }
->>>>>>> 775757d11697b447e61d39822c1ca5ed955fc855
     </style>
 </head>
 <body>
     <div class="modern-card">
-<<<<<<< HEAD
         <div class="brand-logo"><img src="logomapuescuela.png" alt="Logo Mapuescuela"></div>
         <div class="modern-header">
             <h4 class="fw-bold">Revisión Administrativa</h4>
@@ -116,35 +53,6 @@
             alert("Pago aprobado con éxito. Avanzando a logística.");
             window.location.href = 'entregar-pedido.html';
         });
-=======
-        <div class="brand-logo">
-            <i class="bi bi-shop"></i> Mapuescuela
-        </div>
-        <div class="text-center mb-4 text-muted">
-            <h4 class="fw-bold text-dark">Validación de Pago</h4>
-            <p class="small">Verifique el comprobante y decida el estado</p>
-        </div>
-
-        <div class="info-box">
-            <p class="mb-1"><strong>Cliente:</strong> Juan Díaz</p>
-            <p class="mb-1"><strong>Monto:</strong> $15.000</p>
-            <p class="mb-0"><strong>N° Transacción:</strong> 7058358</p>
-        </div>
-
-        <div class="d-grid gap-3">
-            <button onclick="aprobarPago()" class="btn-approve"><i class="bi bi-check-circle me-2"></i>Sí, Aprobar Pago</button>
-            <button onclick="rechazarPago()" class="btn-reject"><i class="bi bi-x-circle me-2"></i>No, Rechazar Pago</button>
-        </div>
-    </div>
-
-    <script>
-        function aprobarPago() {
-            alert("Simulación: Pago aprobado. El proceso avanza a 'Confirmar Compra y descontar stock'.");
-        }
-        function rechazarPago() {
-            alert("Simulación: Pago rechazado. Se ejecuta la tarea de cancelación.");
-        }
->>>>>>> 775757d11697b447e61d39822c1ca5ed955fc855
     </script>
 </body>
 </html>
