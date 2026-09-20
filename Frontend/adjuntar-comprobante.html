@@ -33,7 +33,7 @@
         <div class="brand-logo"><img src="logomapuescuela.png" alt="Logo Mapuescuela"></div>
         <div class="modern-header">
             <h4 class="fw-bold">Paso 2: Comprobante</h4>
-            <p class="small" style="color: #48B2A6; font-weight: 600;">Pedido #005 - Pendiente de Pago</p>
+            <p class="small" id="subtituloPedido" style="color: #48B2A6; font-weight: 600;">Pedido pendiente de pago</p>
         </div>
         
         <div class="alert-custom">
@@ -51,6 +51,14 @@
     </div>
 
     <script>
+        const pedidoId = sessionStorage.getItem('pedidoId');
+        const pedidoTotal = sessionStorage.getItem('pedidoTotal');
+        const subtitulo = document.getElementById('subtituloPedido');
+        if (pedidoId) {
+            subtitulo.textContent = 'Pedido #' + pedidoId + ' - Pendiente de Pago'
+                + (pedidoTotal ? ' ($' + pedidoTotal + ')' : '');
+        }
+
         document.getElementById('formularioComprobante').addEventListener('submit', function(e) {
             e.preventDefault();
             alert("Comprobante subido correctamente. El pedido pasa a revisión.");

@@ -25,7 +25,7 @@
             box-shadow: 9px 9px 16px #d1cec7, -9px -9px 16px #ffffff;
             padding: 2.5rem 2rem;
             width: 100%;
-            max-width: 450px;
+            max-width: 480px;
         }
         .brand-logo {
             text-align: center;
@@ -81,6 +81,26 @@
             box-shadow: 2px 2px 5px 0 #d1cec7, -2px -2px 5px 0 #ffffff;
             color: white;
         }
+        .modern-btn:disabled {
+            opacity: 0.7;
+            transform: none;
+        }
+        .mensaje-api {
+            display: none;
+            margin-top: 1rem;
+            border-radius: 12px;
+            padding: 12px 14px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #2B4B85;
+            box-shadow: 5px 5px 10px #d1cec7, -5px -5px 10px #ffffff;
+        }
+        .mensaje-api.error {
+            border-left: 5px solid #e63946;
+        }
+        .mensaje-api.ok {
+            border-left: 5px solid #48B2A6;
+        }
     </style>
 </head>
 <body>
@@ -106,20 +126,175 @@
                 <input type="email" class="form-control modern-input" id="correoCliente" placeholder="juandiaz@gmail.com" required>
             </div>
             <div class="mb-4">
-                <label class="modern-label"><i class="bi bi-currency-dollar me-2"></i>Monto a Transferir</label>
-                <input type="number" class="form-control modern-input" id="montoTotal" placeholder="15000" required>
+                <label class="modern-label"><i class="bi bi-book me-2"></i>Producto</label>
+                <select class="form-select modern-input" id="selectProducto" required>
+                    <option value="" disabled selected>Cargando productos...</option>
+                </select>
             </div>
-            <button type="submit" class="w-100 modern-btn mt-3">Registrar y Continuar</button>
+            <div class="mb-4">
+                <label class="modern-label"><i class="bi bi-hash me-2"></i>Cantidad</label>
+                <input type="number" class="form-control modern-input" id="cantidadProducto" min="1" value="1" required>
+            </div>
+            <div class="mb-4">
+                <label class="modern-label"><i class="bi bi-truck me-2"></i>Modalidad de entrega</label>
+                <select class="form-select modern-input" id="modalidadEntrega" required>
+                    <option value="" disabled selected>Seleccione una modalidad...</option>
+                    <option value="RETIRO">Retiro en sede</option>
+                    <option value="DESPACHO">Despacho a domicilio</option>
+                </select>
+            </div>
+            <div class="mb-4">
+                <label class="modern-label"><i class="bi bi-currency-dollar me-2"></i>Monto a Transferir</label>
+                <input type="number" class="form-control modern-input" id="montoTotal" placeholder="Se calcula según el producto" readonly required>
+            </div>
+            <button type="submit" class="w-100 modern-btn mt-3" id="btnRegistrar">Registrar y Continuar</button>
+            <div id="mensajeApi" class="mensaje-api"></div>
         </form>
     </div>
 
     <script>
-        document.getElementById('formularioPedido').addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert("Pedido registrado con éxito.");
-            // Redirige automáticamente a la siguiente pantalla
-            window.location.href = 'adjuntar-comprobante.html';
+        const API_BASE = 'http://localhost:8080';
+
+        document.addEventListener('DOMContentLoaded', function() {
+            cargarProductos();
+            document.getElementById('selectProducto').addEventListener('change', actualizarMonto);
+            document.getElementById('cantidadProducto').addEventListener('input', actualizarMonto);
+            document.getElementById('formularioPedido').addEventListener('submit', registrarPedido);
         });
+
+        async function cargarProductos() {
+            const select = document.getElementById('selectProducto');
+            try {
+                const respuesta = await fetch(API_BASE + '/productos');
+                if (!respuesta.ok) {
+                    throw new Error('No se pudieron cargar los productos');
+                }
+                const productos = await respuesta.json();
+                const disponibles = productos.filter(function(producto) {
+                    return String(producto.estado).toLowerCase() === 'disponible' && Number(producto.stock) > 0;
+                });
+
+                select.innerHTML = '';
+                if (disponibles.length === 0) {
+                    select.innerHTML = '<option value="" disabled selected>No hay productos disponibles</option>';
+                    mostrarMensaje('No hay productos disponibles en MySQL.', true);
+                    return;
+                }
+
+                const placeholder = document.createElement('option');
+                placeholder.value = '';
+                placeholder.disabled = true;
+                placeholder.selected = true;
+                placeholder.textContent = 'Seleccione un producto...';
+                select.appendChild(placeholder);
+
+                disponibles.forEach(function(producto) {
+                    const opcion = document.createElement('option');
+                    opcion.value = producto.id;
+                    opcion.dataset.precio = producto.precio;
+                    opcion.dataset.stock = producto.stock;
+                    opcion.textContent = producto.nombre + ' - $' + producto.precio + ' (stock ' + producto.stock + ')';
+                    select.appendChild(opcion);
+                });
+            } catch (error) {
+                select.innerHTML = '<option value="" disabled selected>Error al cargar productos</option>';
+                mostrarMensaje('No se pudo conectar con ' + API_BASE + '. ¿Está corriendo Spring Boot?', true);
+            }
+        }
+
+        function actualizarMonto() {
+            const select = document.getElementById('selectProducto');
+            const opcion = select.options[select.selectedIndex];
+            const cantidad = Number(document.getElementById('cantidadProducto').value) || 1;
+            const precio = Number(opcion && opcion.dataset.precio ? opcion.dataset.precio : 0);
+            document.getElementById('montoTotal').value = precio * cantidad || '';
+        }
+
+        async function registrarPedido(e) {
+            e.preventDefault();
+
+            const boton = document.getElementById('btnRegistrar');
+            const nombre = document.getElementById('nombreCliente').value.trim();
+            const correo = document.getElementById('correoCliente').value.trim();
+            const productoId = Number(document.getElementById('selectProducto').value);
+            const cantidad = Number(document.getElementById('cantidadProducto').value);
+            const modalidadEntrega = document.getElementById('modalidadEntrega').value;
+
+            if (!productoId || !modalidadEntrega) {
+                mostrarMensaje('Selecciona un producto y una modalidad de entrega.', true);
+                return;
+            }
+
+            boton.disabled = true;
+            boton.textContent = 'Registrando...';
+            mostrarMensaje('Enviando pedido a Spring Boot...', false);
+
+            try {
+                const clienteRespuesta = await fetch(API_BASE + '/clientes', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        nombre: nombre,
+                        correo: correo
+                    })
+                });
+                const cliente = await leerJson(clienteRespuesta);
+                if (!clienteRespuesta.ok) {
+                    throw new Error(cliente.error || 'No se pudo registrar el cliente');
+                }
+
+                // Fetch conectado al PedidoController: POST http://localhost:8080/pedidos
+                const pedidoRespuesta = await fetch(API_BASE + '/pedidos', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        clienteId: cliente.id,
+                        modalidadEntrega: modalidadEntrega,
+                        productos: [
+                            {
+                                productoId: productoId,
+                                cantidad: cantidad
+                            }
+                        ]
+                    })
+                });
+                const pedido = await leerJson(pedidoRespuesta);
+                if (!pedidoRespuesta.ok) {
+                    throw new Error(pedido.error || 'No se pudo registrar el pedido');
+                }
+
+                sessionStorage.setItem('pedidoId', String(pedido.id));
+                sessionStorage.setItem('pedidoTotal', String(pedido.total));
+                sessionStorage.setItem('processInstanceId', pedido.processInstanceId || '');
+
+                mostrarMensaje('Pedido #' + pedido.id + ' guardado. Proceso Flowable iniciado.', false);
+                alert('Pedido registrado con éxito. ID: ' + pedido.id);
+                window.location.href = 'adjuntar-comprobante.html';
+            } catch (error) {
+                mostrarMensaje(error.message || 'Error al registrar el pedido', true);
+                boton.disabled = false;
+                boton.textContent = 'Registrar y Continuar';
+            }
+        }
+
+        async function leerJson(respuesta) {
+            const texto = await respuesta.text();
+            if (!texto) {
+                return {};
+            }
+            try {
+                return JSON.parse(texto);
+            } catch (error) {
+                return { error: texto };
+            }
+        }
+
+        function mostrarMensaje(texto, esError) {
+            const caja = document.getElementById('mensajeApi');
+            caja.style.display = 'block';
+            caja.className = 'mensaje-api ' + (esError ? 'error' : 'ok');
+            caja.textContent = texto;
+        }
     </script>
 </body>
 </html>

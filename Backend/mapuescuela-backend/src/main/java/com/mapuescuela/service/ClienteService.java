@@ -26,11 +26,24 @@ public class ClienteService {
 
     @Transactional
     public Cliente crear(ClienteRequest request) {
-        Cliente cliente = new Cliente();
-        cliente.setNombre(request.getNombre());
-        cliente.setCorreo(request.getCorreo());
-        cliente.setTelefono(request.getTelefono());
-        cliente.setDireccion(request.getDireccion());
-        return clienteRepository.save(cliente);
+        return clienteRepository.findFirstByCorreo(request.getCorreo())
+                .map(existente -> {
+                    existente.setNombre(request.getNombre());
+                    if (request.getTelefono() != null) {
+                        existente.setTelefono(request.getTelefono());
+                    }
+                    if (request.getDireccion() != null) {
+                        existente.setDireccion(request.getDireccion());
+                    }
+                    return clienteRepository.save(existente);
+                })
+                .orElseGet(() -> {
+                    Cliente cliente = new Cliente();
+                    cliente.setNombre(request.getNombre());
+                    cliente.setCorreo(request.getCorreo());
+                    cliente.setTelefono(request.getTelefono());
+                    cliente.setDireccion(request.getDireccion());
+                    return clienteRepository.save(cliente);
+                });
     }
 }

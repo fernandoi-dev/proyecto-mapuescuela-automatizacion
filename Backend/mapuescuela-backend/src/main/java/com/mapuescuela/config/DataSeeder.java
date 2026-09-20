@@ -26,15 +26,24 @@ public class DataSeeder implements CommandLineRunner {
             clienteRepository.save(cliente);
         }
 
-        if (productoRepository.count() == 0) {
-            Producto producto = new Producto();
-            producto.setNombre("Libro usado");
-            producto.setDescripcion("Libro en buen estado");
-            producto.setCategoria("Libros");
-            producto.setPrecio(5000);
-            producto.setStock(1);
-            producto.setEstado("Disponible");
-            productoRepository.save(producto);
+        asegurarProducto("Libro usado", "Libro en buen estado", "Libros", 5000, 10);
+        asegurarProducto("Uniforme escolar", "Prenda usada en buen estado", "Uniformes", 8000, 5);
+        asegurarProducto("Mochila", "Mochila reutilizada lista para el colegio", "Utiles", 6000, 8);
+    }
+
+    private void asegurarProducto(String nombre, String descripcion, String categoria, int precio, int stock) {
+        boolean existe = productoRepository.findAll().stream()
+                .anyMatch(producto -> nombre.equalsIgnoreCase(producto.getNombre()));
+        if (existe) {
+            return;
         }
+        Producto producto = new Producto();
+        producto.setNombre(nombre);
+        producto.setDescripcion(descripcion);
+        producto.setCategoria(categoria);
+        producto.setPrecio(precio);
+        producto.setStock(stock);
+        producto.setEstado("Disponible");
+        productoRepository.save(producto);
     }
 }

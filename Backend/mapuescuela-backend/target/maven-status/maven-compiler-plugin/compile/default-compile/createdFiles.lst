@@ -1,0 +1,7 @@
+com\mapuescuela\worker\CancelarTimeoutHandler.class
+com\mapuescuela\worker\ExternalTopicHandler.class
+com\mapuescuela\worker\DescontarStockHandler.class
+com\mapuescuela\worker\PedidoIdResolver.class
+com\mapuescuela\worker\RegistrarRechazoHandler.class
+com\mapuescuela\worker\GenerarPedidoHandler.class
+com\mapuescuela\worker\ExternalWorkerPoller.class
