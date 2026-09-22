@@ -3,66 +3,134 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Adjuntar Comprobante - Mapuescuela</title>
+    <title>Subir Comprobante - Mapuescuela</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <style>
-        body { background-color: #F4F1EA; font-family: 'Nunito', sans-serif; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
-        .modern-card { background-color: #F4F1EA; border-radius: 24px; border: none; box-shadow: 9px 9px 16px #d1cec7, -9px -9px 16px #ffffff; padding: 2.5rem 2rem; width: 100%; max-width: 450px; }
-        .brand-logo { text-align: center; margin-bottom: 1.5rem; }
-        .brand-logo img { width: 130px; height: auto; border-radius: 50%; box-shadow: 5px 5px 10px #d1cec7, -5px -5px 10px #ffffff; }
-        .modern-header { text-align: center; margin-bottom: 1.5rem; color: #2B4B85; }
-        .modern-label { font-weight: 700; color: #2B4B85; margin-bottom: 8px; font-size: 0.9rem; }
+        body { background-color: #F4F1EA; font-family: 'Nunito', sans-serif; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem 0; }
+        .modern-card { background-color: #F4F1EA; border-radius: 24px; border: none; box-shadow: 9px 9px 16px #d1cec7, -9px -9px 16px #ffffff; padding: 2.5rem 2rem; width: 100%; max-width: 500px; text-align: center; }
+        .brand-logo img { width: 110px; height: auto; border-radius: 50%; box-shadow: 5px 5px 10px #d1cec7, -5px -5px 10px #ffffff; margin-bottom: 1.5rem; }
+        .modern-header { color: #2B4B85; margin-bottom: 2rem; }
+        
+        /* Stepper PRO */
+        .stepper { display: flex; justify-content: center; margin-bottom: 2rem; gap: 10px; }
+        .step { width: 30px; height: 30px; border-radius: 50%; background-color: #48B2A6; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.8rem; box-shadow: 0 0 10px rgba(72, 178, 166, 0.5); }
+        .step-line { width: 40px; height: 3px; background-color: #48B2A6; align-self: center; border-radius: 2px; }
+        
         .modern-input { background-color: #F4F1EA; border: none; border-radius: 12px; padding: 12px 15px; color: #2B4B85; box-shadow: inset 6px 6px 10px 0 #d1cec7, inset -6px -6px 10px 0 #ffffff; width: 100%; }
-        .modern-input:focus { box-shadow: inset 4px 4px 8px 0 #d1cec7, inset -4px -4px 8px 0 #ffffff, 0 0 10px rgba(72, 178, 166, 0.4); outline: none; }
         
-        /* Personalización del botón de seleccionar archivo */
-        input[type="file"]::file-selector-button { background-color: #2B4B85; color: white; border: none; border-radius: 8px; padding: 8px 12px; margin-right: 15px; transition: 0.3s; cursor: pointer; font-weight: bold; font-family: 'Nunito'; }
-        input[type="file"]::file-selector-button:hover { background-color: #48B2A6; }
+        .modern-btn { background-color: #2B4B85; color: white; border: none; border-radius: 12px; padding: 14px; font-weight: 800; font-size: 1.05rem; box-shadow: 6px 6px 10px 0 #d1cec7, -6px -6px 10px 0 #ffffff; transition: all 0.3s ease-in-out; width: 100%; display: flex; justify-content: center; align-items: center; gap: 8px; }
+        .modern-btn:hover:not(:disabled) { background-color: #48B2A6; transform: translateY(2px); box-shadow: 2px 2px 5px 0 #d1cec7, -2px -2px 5px 0 #ffffff; color: white; }
+        .modern-btn:disabled { opacity: 0.7; cursor: not-allowed; }
+
+        .info-box { background-color: #e8f4f3; border-left: 4px solid #48B2A6; padding: 15px; border-radius: 8px; text-align: left; font-size: 0.9rem; color: #2B4B85; margin-bottom: 20px; }
         
-        .modern-btn { background-color: #2B4B85; color: white; border: none; border-radius: 12px; padding: 12px; font-weight: 700; font-size: 1rem; box-shadow: 6px 6px 10px 0 #d1cec7, -6px -6px 10px 0 #ffffff; transition: all 0.3s ease-in-out; }
-        .modern-btn:hover { background-color: #48B2A6; transform: translateY(2px); box-shadow: 2px 2px 5px 0 #d1cec7, -2px -2px 5px 0 #ffffff; color: white; }
-        
-        /* Alerta Neumórfica */
-        .alert-custom { background-color: #F4F1EA; border-left: 5px solid #48B2A6; border-radius: 12px; padding: 15px; box-shadow: 5px 5px 10px #d1cec7, -5px -5px 10px #ffffff; margin-bottom: 1.5rem; font-size: 0.85rem; color: #2B4B85; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+        /* Pantalla de Éxito (Oculta por defecto) */
+        #successArea { display: none; animation: fadeIn 0.5s ease-in; }
+        .success-icon { font-size: 5rem; color: #48B2A6; margin-bottom: 1rem; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
     </style>
 </head>
 <body>
     <div class="modern-card">
         <div class="brand-logo"><img src="logomapuescuela.png" alt="Logo Mapuescuela"></div>
-        <div class="modern-header">
-            <h4 class="fw-bold">Paso 2: Comprobante</h4>
-            <p class="small" id="subtituloPedido" style="color: #48B2A6; font-weight: 600;">Pedido pendiente de pago</p>
-        </div>
-        
-        <div class="alert-custom">
-            <i class="bi bi-clock-history fs-4" style="color: #48B2A6;"></i>
-            <span>Recuerda: Tienes un plazo de <strong>24 horas</strong> para adjuntar tu comprobante de transferencia.</span>
+
+        <!-- Área del Formulario -->
+        <div id="formArea">
+            <div class="stepper">
+                <div class="step"><i class="bi bi-check"></i></div>
+                <div class="step-line"></div>
+                <div class="step">2</div>
+            </div>
+
+            <div class="modern-header">
+                <h4 class="fw-bold mb-1">Paso 2: Comprobante</h4>
+                <p class="small fw-bold text-success" id="infoPedido">Cargando datos del pedido...</p>
+            </div>
+            
+            <div class="info-box">
+                <i class="bi bi-clock-history me-2"></i>Recuerda: Tienes un plazo de 24 horas para adjuntar tu comprobante de transferencia o el pedido será cancelado automáticamente.
+            </div>
+
+            <form id="formComprobante">
+                <div class="mb-4 text-start">
+                    <label class="fw-bold text-secondary small mb-2"><i class="bi bi-upload me-2"></i>Sube tu imagen (JPG, PNG o PDF)</label>
+                    <input class="form-control modern-input" type="file" id="archivoComprobante" accept=".jpg,.jpeg,.png,.pdf" required>
+                </div>
+
+                <button type="submit" class="modern-btn" id="btnEnviar">
+                    <i class="bi bi-send"></i> Enviar Comprobante
+                </button>
+            </form>
         </div>
 
-        <form id="formularioComprobante">
-            <div class="mb-4">
-                <label class="modern-label"><i class="bi bi-upload me-2"></i>Sube tu imagen (JPG, PNG o PDF)</label>
-                <input type="file" class="modern-input" id="archivoComprobante" required>
+        <!-- Pantalla de Éxito Definitiva -->
+        <div id="successArea">
+            <i class="bi bi-check-circle-fill success-icon"></i>
+            <h3 class="fw-bold" style="color: #2B4B85;">¡Comprobante Enviado!</h3>
+            <p class="text-muted mt-3 mb-4">Hemos recibido tu pago correctamente. Nuestro equipo lo validará a la brevedad y comenzaremos a preparar tu pedido.</p>
+            <div class="info-box text-center" style="border-left: none; background-color: #f8f9fa; border: 1px dashed #d1cec7;">
+                <i class="bi bi-envelope-check d-block fs-4 mb-2"></i>
+                Te notificaremos por correo electrónico cada vez que tu pedido avance de etapa.
             </div>
-            <button type="submit" class="w-100 modern-btn mt-2">Enviar Comprobante</button>
-        </form>
+            <a href="registrar-pedido.html" class="btn btn-link text-decoration-none fw-bold" style="color: #48B2A6;">Volver a la tienda</a>
+        </div>
+
     </div>
 
     <script>
-        const pedidoId = sessionStorage.getItem('pedidoId');
-        const pedidoTotal = sessionStorage.getItem('pedidoTotal');
-        const subtitulo = document.getElementById('subtituloPedido');
-        if (pedidoId) {
-            subtitulo.textContent = 'Pedido #' + pedidoId + ' - Pendiente de Pago'
-                + (pedidoTotal ? ' ($' + pedidoTotal + ')' : '');
-        }
+        document.addEventListener('DOMContentLoaded', function() {
+            // Recupera el ID y Total guardados en el paso 1
+            const pedidoId = sessionStorage.getItem('pedidoId');
+            const total = sessionStorage.getItem('pedidoTotal');
 
-        document.getElementById('formularioComprobante').addEventListener('submit', function(e) {
+            if (!pedidoId) {
+                alert('No se encontró un pedido activo. Por favor vuelve al inicio.');
+                window.location.href = 'registrar-pedido.html';
+                return;
+            }
+
+            const montoFormateado = new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP' }).format(total);
+            document.getElementById('infoPedido').innerText = `Pedido #${pedidoId} - Monto a transferir: ${montoFormateado}`;
+        });
+
+        document.getElementById('formComprobante').addEventListener('submit', async function(e) {
             e.preventDefault();
-            alert("Comprobante subido correctamente. El pedido pasa a revisión.");
-            window.location.href = 'revisar-comprobante.html';
+            
+            const fileInput = document.getElementById('archivoComprobante');
+            if (fileInput.files.length === 0) return;
+
+            const btn = document.getElementById('btnEnviar');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Subiendo al servidor...';
+
+            const formData = new FormData();
+            formData.append('archivo', fileInput.files[0]);
+            
+            const pedidoId = sessionStorage.getItem('pedidoId');
+
+            try {
+                // Envía el archivo al Backend de Spring Boot
+                const response = await fetch(`http://localhost:8080/pedidos/${pedidoId}/comprobante`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) throw new Error('Error al subir el archivo');
+
+                // MAGIA UX: Oculta el formulario y muestra el mensaje de éxito
+                document.getElementById('formArea').style.display = 'none';
+                document.getElementById('successArea').style.display = 'block';
+                
+                // Limpia la sesión porque el flujo del cliente terminó
+                sessionStorage.clear();
+
+            } catch (error) {
+                alert('Hubo un problema de conexión. Intenta subirlo de nuevo.');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="bi bi-send"></i> Enviar Comprobante';
+            }
         });
     </script>
 </body>

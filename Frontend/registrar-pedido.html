@@ -3,155 +3,154 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registrar Pedido - Mapuescuela</title>
+    <title>Checkout - Mapuescuela</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <style>
         body {
-            /* Fondo arena cálido inspirado en la identidad de Mapuescuela */
             background-color: #F4F1EA;
             font-family: 'Nunito', sans-serif;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 2rem 0;
         }
         .modern-card {
             background-color: #F4F1EA;
             border-radius: 24px;
             border: none;
-            /* Sombras neumórficas ajustadas al nuevo color de fondo */
             box-shadow: 9px 9px 16px #d1cec7, -9px -9px 16px #ffffff;
             padding: 2.5rem 2rem;
             width: 100%;
-            max-width: 480px;
+            max-width: 500px;
         }
-        .brand-logo {
-            text-align: center;
-            margin-bottom: 1.5rem;
-        }
+        .brand-logo { text-align: center; margin-bottom: 1.5rem; }
         .brand-logo img {
-            width: 130px; /* Tamaño del logo */
-            height: auto;
-            border-radius: 50%;
-            /* Sutil relieve circular para el logo */
+            width: 110px; height: auto; border-radius: 50%;
             box-shadow: 5px 5px 10px #d1cec7, -5px -5px 10px #ffffff; 
+            transition: transform 0.3s;
         }
-        .modern-header {
-            text-align: center;
-            margin-bottom: 2rem;
-            color: #2B4B85; /* Azul índigo institucional */
-        }
+        .brand-logo img:hover { transform: scale(1.05); }
+        .modern-header { text-align: center; margin-bottom: 2rem; color: #2B4B85; }
+        
+        /* Stepper de Progreso PRO */
+        .stepper { display: flex; justify-content: center; margin-bottom: 2rem; gap: 10px; }
+        .step { width: 30px; height: 30px; border-radius: 50%; background-color: #d1cec7; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.8rem; }
+        .step.active { background-color: #48B2A6; box-shadow: 0 0 10px rgba(72, 178, 166, 0.5); }
+        .step-line { width: 40px; height: 3px; background-color: #d1cec7; align-self: center; border-radius: 2px; }
+
         .modern-input {
-            background-color: #F4F1EA;
-            border: none;
-            border-radius: 12px;
-            padding: 12px 15px;
-            color: #2B4B85;
+            background-color: #F4F1EA; border: none; border-radius: 12px; padding: 12px 15px; color: #2B4B85;
             box-shadow: inset 6px 6px 10px 0 #d1cec7, inset -6px -6px 10px 0 #ffffff;
+            transition: all 0.3s ease;
         }
         .modern-input:focus {
-            background-color: #F4F1EA;
-            /* Foco con resplandor turquesa suave */
-            box-shadow: inset 4px 4px 8px 0 #d1cec7, inset -4px -4px 8px 0 #ffffff, 0 0 10px rgba(72, 178, 166, 0.4);
-            color: #2B4B85;
+            box-shadow: inset 4px 4px 8px 0 #d1cec7, inset -4px -4px 8px 0 #ffffff, 0 0 8px rgba(72, 178, 166, 0.4);
             outline: none;
         }
-        .modern-label {
-            font-weight: 700;
-            color: #2B4B85; /* Azul índigo */
-            margin-bottom: 8px;
-            font-size: 0.9rem;
-        }
+        .modern-input.is-valid { border: 2px solid #48B2A6; padding-right: 2.5rem; background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%2348B2A6' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right calc(.375em + .1875rem) center; background-size: calc(.75em + .375rem) calc(.75em + .375rem); }
+        
+        .modern-label { font-weight: 700; color: #2B4B85; margin-bottom: 8px; font-size: 0.9rem; display: flex; align-items: center; justify-content: space-between;}
+        
         .modern-btn {
-            background-color: #2B4B85; /* Azul institucional por defecto */
-            color: white;
-            border: none;
-            border-radius: 12px;
-            padding: 12px;
-            font-weight: 700;
-            font-size: 1rem;
-            box-shadow: 6px 6px 10px 0 #d1cec7, -6px -6px 10px 0 #ffffff;
-            transition: all 0.3s ease-in-out;
+            background-color: #2B4B85; color: white; border: none; border-radius: 12px; padding: 14px;
+            font-weight: 800; font-size: 1.05rem; box-shadow: 6px 6px 10px 0 #d1cec7, -6px -6px 10px 0 #ffffff;
+            transition: all 0.3s ease-in-out; display: flex; justify-content: center; align-items: center; gap: 8px;
         }
-        .modern-btn:hover {
-            background-color: #48B2A6; /* Turquesa institucional al pasar el mouse */
-            transform: translateY(2px);
-            box-shadow: 2px 2px 5px 0 #d1cec7, -2px -2px 5px 0 #ffffff;
-            color: white;
-        }
-        .modern-btn:disabled {
-            opacity: 0.7;
-            transform: none;
-        }
-        .mensaje-api {
-            display: none;
-            margin-top: 1rem;
-            border-radius: 12px;
-            padding: 12px 14px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #2B4B85;
-            box-shadow: 5px 5px 10px #d1cec7, -5px -5px 10px #ffffff;
-        }
-        .mensaje-api.error {
-            border-left: 5px solid #e63946;
-        }
-        .mensaje-api.ok {
-            border-left: 5px solid #48B2A6;
-        }
+        .modern-btn:hover:not(:disabled) { background-color: #48B2A6; transform: translateY(2px); box-shadow: 2px 2px 5px 0 #d1cec7, -2px -2px 5px 0 #ffffff; color: white; }
+        .modern-btn:disabled { opacity: 0.7; cursor: not-allowed; }
+        
+        .monto-destacado { font-size: 1.2rem; font-weight: 900; color: #48B2A6; background-color: #e8f4f3; box-shadow: none; border: 2px dashed #48B2A6; text-align: center; }
+        .tooltip-icon { color: #8e9bb0; cursor: pointer; transition: color 0.2s; }
+        .tooltip-icon:hover { color: #48B2A6; }
     </style>
 </head>
 <body>
     <div class="modern-card">
-        <!-- Logo Mapuescuela -->
         <div class="brand-logo">
-            <!-- Asegúrate de tener la imagen 'logo-mapuescuela.png' en la misma carpeta que este HTML -->
             <img src="logomapuescuela.png" alt="Logo Mapuescuela">
         </div>
 
+        <!-- Stepper Visual -->
+        <div class="stepper">
+            <div class="step active">1</div>
+            <div class="step-line"></div>
+            <div class="step">2</div>
+        </div>
+
         <div class="modern-header">
-            <h4 class="fw-bold">Nuevo Pedido</h4>
-            <p class="small" style="color: #48B2A6; font-weight: 600;">Ingresa los datos del cliente</p>
+            <h4 class="fw-bold mb-1">Checkout Seguro</h4>
+            <p class="small text-muted">Ingresa tus datos para procesar la compra</p>
         </div>
         
         <form id="formularioPedido">
-            <div class="mb-4">
-                <label class="modern-label"><i class="bi bi-person me-2"></i>Nombre del Cliente</label>
-                <input type="text" class="form-control modern-input" id="nombreCliente" placeholder="Ej: Juan Díaz" required>
+            <!-- Datos Personales -->
+            <div class="row">
+                <div class="col-md-12 mb-3">
+                    <label class="modern-label"><span class="text-nowrap"><i class="bi bi-person me-2"></i>Nombre Completo</span></label>
+                    <input type="text" class="form-control modern-input" id="nombreCliente" placeholder="Ej: Juan Díaz" required autocomplete="name">
+                </div>
+                <div class="col-md-12 mb-4">
+                    <label class="modern-label">
+                        <span class="text-nowrap"><i class="bi bi-envelope me-2"></i>Correo Electrónico</span>
+                        <i class="bi bi-info-circle tooltip-icon" title="Enviaremos la confirmación aquí"></i>
+                    </label>
+                    <input type="email" class="form-control modern-input" id="correoCliente" placeholder="ejemplo@correo.com" required autocomplete="email" oninput="validarCorreo(this)">
+                </div>
             </div>
-            <div class="mb-4">
-                <label class="modern-label"><i class="bi bi-envelope me-2"></i>Correo Electrónico</label>
-                <input type="email" class="form-control modern-input" id="correoCliente" placeholder="juandiaz@gmail.com" required>
-            </div>
-            <div class="mb-4">
-                <label class="modern-label"><i class="bi bi-book me-2"></i>Producto</label>
-                <select class="form-select modern-input" id="selectProducto" required>
-                    <option value="" disabled selected>Cargando productos...</option>
+
+            <hr class="text-muted opacity-25 mb-4">
+
+            <!-- Detalle de Compra -->
+            <div class="mb-3">
+                <label class="modern-label"><span class="text-nowrap"><i class="bi bi-bag-check me-2"></i>Producto Seleccionado</span></label>
+                <select class="form-select modern-input fw-bold text-dark" id="selectProducto" required>
+                    <option value="" disabled selected>Cargando catálogo...</option>
                 </select>
             </div>
-            <div class="mb-4">
-                <label class="modern-label"><i class="bi bi-hash me-2"></i>Cantidad</label>
-                <input type="number" class="form-control modern-input" id="cantidadProducto" min="1" value="1" required>
+            
+            <div class="row mb-4">
+                <div class="col-5">
+                    <label class="modern-label"><span class="text-nowrap"><i class="bi bi-123 me-2"></i>Cantidad</span></label>
+                    <input type="number" class="form-control modern-input text-center fw-bold" id="cantidadProducto" min="1" value="1" required>
+                </div>
+                <div class="col-7">
+                    <label class="modern-label"><span class="text-nowrap"><i class="bi bi-truck me-2"></i>Entrega</span></label>
+                    <select class="form-select modern-input" id="modalidadEntrega" required onchange="mostrarDireccion()">
+                        <option value="" disabled selected>Elegir...</option>
+                        <option value="RETIRO">Retiro en Sede</option>
+                        <option value="DESPACHO">Despacho Domicilio</option>
+                    </select>
+                </div>
             </div>
-            <div class="mb-4">
-                <label class="modern-label"><i class="bi bi-truck me-2"></i>Modalidad de entrega</label>
-                <select class="form-select modern-input" id="modalidadEntrega" required>
-                    <option value="" disabled selected>Seleccione una modalidad...</option>
-                    <option value="RETIRO">Retiro en sede</option>
-                    <option value="DESPACHO">Despacho a domicilio</option>
-                </select>
+
+            <!-- Dirección Dinámica -->
+            <div class="mb-4" id="divDireccion" style="display: none;">
+                <label class="modern-label"><span class="text-nowrap"><i class="bi bi-geo-alt me-2"></i>Dirección Exacta</span></label>
+                <input type="text" class="form-control modern-input" id="direccionCliente" placeholder="Calle, Número, Comuna">
             </div>
+
+            <!-- Total Destacado -->
             <div class="mb-4">
-                <label class="modern-label"><i class="bi bi-currency-dollar me-2"></i>Monto a Transferir</label>
-                <input type="number" class="form-control modern-input" id="montoTotal" placeholder="Se calcula según el producto" readonly required>
+                <label class="modern-label">
+                    <span class="text-nowrap"><i class="bi bi-cash-coin me-2"></i>Total a Pagar</span>
+                    <i class="bi bi-shield-check text-success" title="Cálculo automático seguro"></i>
+                </label>
+                <input type="text" class="form-control modern-input monto-destacado" id="montoTotalVisual" placeholder="$0" readonly>
+                <input type="hidden" id="montoTotal">
             </div>
-            <button type="submit" class="w-100 modern-btn mt-3" id="btnRegistrar">Registrar y Continuar</button>
-            <div id="mensajeApi" class="mensaje-api"></div>
+
+            <!-- Botón con estado de carga -->
+            <button type="submit" class="w-100 modern-btn mt-2" id="btnRegistrar">
+                <span>Continuar al Pago</span> <i class="bi bi-arrow-right-circle"></i>
+            </button>
         </form>
     </div>
 
+    <!-- Bootstrap JS para los Tooltips -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         const API_BASE = 'http://localhost:8080';
 
@@ -160,45 +159,64 @@
             document.getElementById('selectProducto').addEventListener('change', actualizarMonto);
             document.getElementById('cantidadProducto').addEventListener('input', actualizarMonto);
             document.getElementById('formularioPedido').addEventListener('submit', registrarPedido);
+            
+            // Inicializar Tooltips de Bootstrap
+            const tooltipTriggerList = document.querySelectorAll('[title]')
+            const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
         });
+
+        // Validación visual de correo
+        function validarCorreo(input) {
+            const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (regex.test(input.value)) {
+                input.classList.add('is-valid');
+            } else {
+                input.classList.remove('is-valid');
+            }
+        }
+
+        function mostrarDireccion() {
+            const modalidad = document.getElementById('modalidadEntrega').value;
+            const divDireccion = document.getElementById('divDireccion');
+            const inputDireccion = document.getElementById('direccionCliente');
+
+            if (modalidad === 'DESPACHO') {
+                divDireccion.style.display = 'block';
+                inputDireccion.required = true;
+            } else {
+                divDireccion.style.display = 'none';
+                inputDireccion.required = false;
+                inputDireccion.value = '';
+            }
+        }
 
         async function cargarProductos() {
             const select = document.getElementById('selectProducto');
             try {
                 const respuesta = await fetch(API_BASE + '/productos');
-                if (!respuesta.ok) {
-                    throw new Error('No se pudieron cargar los productos');
-                }
+                if (!respuesta.ok) throw new Error();
                 const productos = await respuesta.json();
-                const disponibles = productos.filter(function(producto) {
-                    return String(producto.estado).toLowerCase() === 'disponible' && Number(producto.stock) > 0;
-                });
+                const disponibles = productos.filter(p => String(p.estado).toLowerCase() === 'disponible' && Number(p.stock) > 0);
 
                 select.innerHTML = '';
                 if (disponibles.length === 0) {
-                    select.innerHTML = '<option value="" disabled selected>No hay productos disponibles</option>';
-                    mostrarMensaje('No hay productos disponibles en MySQL.', true);
+                    select.innerHTML = '<option value="" disabled selected>Sin stock disponible</option>';
                     return;
                 }
 
-                const placeholder = document.createElement('option');
-                placeholder.value = '';
-                placeholder.disabled = true;
-                placeholder.selected = true;
-                placeholder.textContent = 'Seleccione un producto...';
-                select.appendChild(placeholder);
-
-                disponibles.forEach(function(producto) {
+                select.innerHTML = '<option value="" disabled selected>Seleccione un producto...</option>';
+                disponibles.forEach(producto => {
                     const opcion = document.createElement('option');
                     opcion.value = producto.id;
                     opcion.dataset.precio = producto.precio;
                     opcion.dataset.stock = producto.stock;
-                    opcion.textContent = producto.nombre + ' - $' + producto.precio + ' (stock ' + producto.stock + ')';
+                    // Formato moneda para las opciones
+                    const precioFormat = new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP' }).format(producto.precio);
+                    opcion.textContent = `${producto.nombre} - ${precioFormat} (Quedan ${producto.stock})`;
                     select.appendChild(opcion);
                 });
             } catch (error) {
-                select.innerHTML = '<option value="" disabled selected>Error al cargar productos</option>';
-                mostrarMensaje('No se pudo conectar con ' + API_BASE + '. ¿Está corriendo Spring Boot?', true);
+                select.innerHTML = '<option value="" disabled selected>Error de conexión</option>';
             }
         }
 
@@ -207,7 +225,12 @@
             const opcion = select.options[select.selectedIndex];
             const cantidad = Number(document.getElementById('cantidadProducto').value) || 1;
             const precio = Number(opcion && opcion.dataset.precio ? opcion.dataset.precio : 0);
-            document.getElementById('montoTotal').value = precio * cantidad || '';
+            const total = precio * cantidad;
+            
+            // Guardamos el valor real para la BD
+            document.getElementById('montoTotal').value = total || '';
+            // Mostramos el valor formateado al usuario
+            document.getElementById('montoTotalVisual').value = total ? new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP' }).format(total) : '$0';
         }
 
         async function registrarPedido(e) {
@@ -216,84 +239,64 @@
             const boton = document.getElementById('btnRegistrar');
             const nombre = document.getElementById('nombreCliente').value.trim();
             const correo = document.getElementById('correoCliente').value.trim();
+            const direccion = document.getElementById('direccionCliente').value.trim();
             const productoId = Number(document.getElementById('selectProducto').value);
             const cantidad = Number(document.getElementById('cantidadProducto').value);
             const modalidadEntrega = document.getElementById('modalidadEntrega').value;
 
             if (!productoId || !modalidadEntrega) {
-                mostrarMensaje('Selecciona un producto y una modalidad de entrega.', true);
+                alert('Faltan datos por completar');
                 return;
             }
 
+            // Estado de carga PRO
             boton.disabled = true;
-            boton.textContent = 'Registrando...';
-            mostrarMensaje('Enviando pedido a Spring Boot...', false);
+            boton.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Procesando reserva...';
 
             try {
                 const clienteRespuesta = await fetch(API_BASE + '/clientes', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        nombre: nombre,
-                        correo: correo
-                    })
+                    body: JSON.stringify({ nombre, correo, direccion })
                 });
                 const cliente = await leerJson(clienteRespuesta);
-                if (!clienteRespuesta.ok) {
-                    throw new Error(cliente.error || 'No se pudo registrar el cliente');
-                }
+                if (!clienteRespuesta.ok) throw new Error(cliente.error || 'Fallo al registrar cliente');
 
-                // Fetch conectado al PedidoController: POST http://localhost:8080/pedidos
                 const pedidoRespuesta = await fetch(API_BASE + '/pedidos', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         clienteId: cliente.id,
                         modalidadEntrega: modalidadEntrega,
-                        productos: [
-                            {
-                                productoId: productoId,
-                                cantidad: cantidad
-                            }
-                        ]
+                        productos: [{ productoId, cantidad }]
                     })
                 });
                 const pedido = await leerJson(pedidoRespuesta);
-                if (!pedidoRespuesta.ok) {
-                    throw new Error(pedido.error || 'No se pudo registrar el pedido');
-                }
+                if (!pedidoRespuesta.ok) throw new Error(pedido.error || 'Fallo al procesar orden');
 
                 sessionStorage.setItem('pedidoId', String(pedido.id));
                 sessionStorage.setItem('pedidoTotal', String(pedido.total));
                 sessionStorage.setItem('processInstanceId', pedido.processInstanceId || '');
 
-                mostrarMensaje('Pedido #' + pedido.id + ' guardado. Proceso Flowable iniciado.', false);
-                alert('Pedido registrado con éxito. ID: ' + pedido.id);
-                window.location.href = 'adjuntar-comprobante.html';
+                // Transición fluida a la página 2
+                boton.innerHTML = '<i class="bi bi-check2-circle me-2"></i> ¡Listo! Redirigiendo...';
+                boton.classList.replace('modern-btn', 'btn-success');
+                
+                setTimeout(() => {
+                    window.location.href = 'adjuntar-comprobante.html';
+                }, 1000);
+
             } catch (error) {
-                mostrarMensaje(error.message || 'Error al registrar el pedido', true);
+                alert(error.message || 'Ocurrió un error. Intenta nuevamente.');
                 boton.disabled = false;
-                boton.textContent = 'Registrar y Continuar';
+                boton.innerHTML = '<span>Continuar al Pago</span> <i class="bi bi-arrow-right-circle"></i>';
             }
         }
 
         async function leerJson(respuesta) {
             const texto = await respuesta.text();
-            if (!texto) {
-                return {};
-            }
-            try {
-                return JSON.parse(texto);
-            } catch (error) {
-                return { error: texto };
-            }
-        }
-
-        function mostrarMensaje(texto, esError) {
-            const caja = document.getElementById('mensajeApi');
-            caja.style.display = 'block';
-            caja.className = 'mensaje-api ' + (esError ? 'error' : 'ok');
-            caja.textContent = texto;
+            if (!texto) return {};
+            try { return JSON.parse(texto); } catch (e) { return { error: texto }; }
         }
     </script>
 </body>

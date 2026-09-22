@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel de Administración - Mapuescuela</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <!-- SweetAlert2 para Alertas PRO -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        body { background-color: #f8f9fa; font-family: 'Nunito', sans-serif; }
+        .sidebar { background-color: #2B4B85; min-height: 100vh; color: white; padding-top: 2rem; }
+        .sidebar a { color: #cfd8dc; text-decoration: none; padding: 10px 20px; display: block; font-weight: 600; transition: 0.3s; }
+        .sidebar a:hover, .sidebar a.active { background-color: #1a365d; color: white; border-left: 4px solid #48B2A6; }
+        .card-panel { border: none; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .btn-accion { border-radius: 8px; padding: 5px 15px; font-weight: 600; font-size: 0.9rem; transition: 0.2s; }
+        
+        /* KPIs con colores institucionales */
+        .kpi-card { border: none; border-radius: 15px; padding: 1.5rem; color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: transform 0.3s; }
+        .kpi-card:hover { transform: translateY(-3px); }
+        .bg-gradient-primary { background: linear-gradient(45deg, #2B4B85, #3a65b0); }
+        .bg-gradient-warning { background: linear-gradient(45deg, #f39c12, #f1c40f); }
+        .bg-gradient-success { background: linear-gradient(45deg, #48B2A6, #3a8e84); } 
+        .kpi-icon { font-size: 2.5rem; opacity: 0.5; }
+        
+        .live-indicator { display: inline-block; width: 10px; height: 10px; background-color: #e74c3c; border-radius: 50%; margin-right: 5px; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(231, 76, 60, 0); } 100% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0); } }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-2 sidebar">
+                <div class="text-center mb-4">
+                    <img src="logomapuescuela.png" alt="Logo" class="img-fluid rounded-circle mb-2" style="width: 80px; background: white; padding: 5px;">
+                    <h5>Mapuescuela Admin</h5>
+                    <small class="text-warning">Panel Interno</small>
+                </div>
+                <a href="panel-admin.html" class="active"><i class="bi bi-graph-up-arrow me-2"></i> Dashboard</a>
+                <a href="registrar-pedido.html" target="_blank"><i class="bi bi-shop me-2"></i> Ir a Tienda Pública</a>
+            </div>
+            
+            <div class="col-md-10 p-5">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h2 class="text-dark fw-bold mb-0">Centro de Operaciones</h2>
+                        <p class="text-muted mt-1"><span class="live-indicator"></span>Monitoreo de ingresos y control logístico</p>
+                    </div>
+                </div>
+
+                <!-- KPIs -->
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <div class="kpi-card bg-gradient-primary d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-uppercase fw-bold mb-1 opacity-75">Ingresos Brutos</h6>
+                                <h2 class="mb-0 fw-bold" id="kpi-ingresos">$0</h2>
+                            </div>
+                            <i class="bi bi-cash-stack kpi-icon"></i>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="kpi-card bg-gradient-warning d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-uppercase fw-bold mb-1 opacity-75">Pendientes de Acción</h6>
+                                <h2 class="mb-0 fw-bold" id="kpi-pendientes">0</h2>
+                            </div>
+                            <i class="bi bi-exclamation-circle kpi-icon"></i>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="kpi-card bg-gradient-success d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-uppercase fw-bold mb-1 opacity-75">Órdenes Finalizadas</h6>
+                                <h2 class="mb-0 fw-bold" id="kpi-completados">0</h2>
+                            </div>
+                            <i class="bi bi-check2-all kpi-icon"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabla Logística -->
+                <div class="card card-panel p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="fw-bold mb-0">Gestión Logística de Pedidos</h5>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-outline-success" onclick="exportarExcel()"><i class="bi bi-download"></i> CSV</button>
+                            <div class="input-group" style="width: 250px;">
+                                <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
+                                <input type="text" id="buscador" class="form-control border-start-0" placeholder="Buscar ID..." onkeyup="filtrarTabla()">
+                            </div>
+                        </div>
+                    </div>
+
+                    <table class="table table-hover align-middle" id="tablaPrincipal">
+                        <thead class="table-light">
+                            <tr>
+                                <th>N° Orden</th>
+                                <th>Total</th>
+                                <th>Modalidad Entrega</th> 
+                                <th>Estado Flowable</th>
+                                <th class="text-end">Panel de Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaPedidos" style="transition: 0.3s;">
+                            <tr>
+                                <td colspan="5" class="text-center text-muted py-4">Sincronizando con la base de datos...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let datosGlobales = [];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            cargarPedidos();
+            // Refresco silencioso cada 5 segundos
+            setInterval(() => cargarPedidos(false), 5000); 
+        });
+
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true
+        });
+
+        function cargarPedidos() {
+            fetch('http://localhost:8080/pedidos/admin/lista')
+                .then(response => response.json())
+                .then(data => {
+                    const tbody = document.getElementById('tablaPedidos');
+                    datosGlobales = data; 
+                    
+                    if (data.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-4"><i class="bi bi-inbox fs-4 d-block mb-2"></i>Bandeja de operaciones vacía.</td></tr>';
+                        return;
+                    }
+                    
+                    let htmlFilas = '';
+                    let ingresos = 0;
+                    let pendientes = 0;
+                    let completados = 0;
+
+                    data.reverse().forEach(pedido => {
+                        const estadoEval = String(pedido.estado).toUpperCase();
+
+                        if (estadoEval !== 'CANCELADO') { ingresos += pedido.total; }
+                        if (estadoEval === 'PENDIENTE_PAGO' || estadoEval === 'PAGO_EN_REVISION' || estadoEval === 'EN_PREPARACION') { pendientes++; }
+                        if (estadoEval === 'LISTO_PARA_RETIRO' || estadoEval === 'ENTREGADO') { completados++; }
+
+                        let config = obtenerConfiguracionEstado(estadoEval, pedido.id);
+                        
+                        let logistica = pedido.modalidadEntrega ? pedido.modalidadEntrega : 'Por definir';
+                        let iconoLogistica = logistica.toUpperCase().includes('DESPACHO') ? '<i class="bi bi-truck text-primary"></i> Despacho' : '<i class="bi bi-shop text-secondary"></i> Retiro';
+
+                        htmlFilas += `
+                            <tr class="fila-pedido">
+                                <td class="pedido-id"><strong>#${pedido.id}</strong></td>
+                                <td class="text-success fw-bold">$${pedido.total}</td>
+                                <td>${iconoLogistica}</td>
+                                <td><span class="badge ${config.claseBadge}">${estadoEval.replace(/_/g, ' ')}</span></td>
+                                <td class="text-end">${config.boton}</td>
+                            </tr>
+                        `;
+                    });
+
+                    if(tbody.innerHTML !== htmlFilas) {
+                        tbody.innerHTML = htmlFilas;
+                        document.getElementById('kpi-ingresos').innerText = '$' + ingresos.toLocaleString('es-CL');
+                        document.getElementById('kpi-pendientes').innerText = pendientes;
+                        document.getElementById('kpi-completados').innerText = completados;
+                    }
+                })
+                .catch(error => console.error('Error de conexión con Backend:', error));
+        }
+
+        function filtrarTabla() {
+            let input = document.getElementById("buscador").value.toLowerCase();
+            let filas = document.getElementsByClassName("fila-pedido");
+            for (let i = 0; i < filas.length; i++) {
+                let idText = filas[i].getElementsByClassName("pedido-id")[0].innerText.toLowerCase();
+                filas[i].style.display = idText.includes(input) ? "" : "none";
+            }
+        }
+
+        function exportarExcel() {
+            if(datosGlobales.length === 0) {
+                Toast.fire({ icon: 'error', title: 'No hay datos de operaciones.' });
+                return;
+            }
+            let csv = 'ID Pedido,Ingreso Total,Estado\n';
+            datosGlobales.forEach(p => { csv += `${p.id},${p.total},${p.estado}\n`; });
+            
+            let hiddenElement = document.createElement('a');
+            hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
+            hiddenElement.target = '_blank';
+            hiddenElement.download = 'Logistica_Operaciones_Mapuescuela.csv';
+            hiddenElement.click();
+            Toast.fire({ icon: 'success', title: 'Libro de Operaciones CSV exportado.' });
+        }
+
+        
+        function obtenerConfiguracionEstado(estado, id) {
+            switch(estado) {
+                case 'PENDIENTE_PAGO':
+                case 'PAGO_EN_REVISION':
+                    return {
+                        claseBadge: 'bg-warning text-dark',
+                        boton: `
+                            <div class="btn-group" role="group">
+                                <button class="btn btn-success btn-accion" onclick="avanzarEstado(${id}, 'EN_PREPARACION')"><i class="bi bi-check-circle"></i> Validar</button>
+                                <button class="btn btn-outline-danger btn-accion ms-2" onclick="avanzarEstado(${id}, 'CANCELADO')"><i class="bi bi-x-circle"></i> Rechazar</button>
+                            </div>
+                        `
+                    };
+                case 'EN_PREPARACION':
+                    return {
+                        claseBadge: 'bg-info text-dark',
+                        boton: `<button class="btn btn-primary btn-accion" onclick="avanzarEstado(${id}, 'LISTO_PARA_RETIRO')"><i class="bi bi-scissors"></i> Finalizar Confección</button>`
+                    };
+                case 'LISTO_PARA_RETIRO':
+                    return { claseBadge: 'bg-primary', boton: '<span class="text-muted small"><i class="bi bi-box-arrow-right"></i> Logística Completada</span>' };
+                case 'CANCELADO':
+                    return { claseBadge: 'bg-danger', boton: '<span class="text-muted small"><i class="bi bi-x-circle"></i> Rechazado</span>' };
+                default:
+                    return { claseBadge: 'bg-secondary', boton: '<span class="text-muted small"><i class="bi bi-check2-all"></i> Finalizado</span>' };
+            }
+        }
+
+        function avanzarEstado(id, nuevoEstado) {
+            const tbody = document.getElementById('tablaPedidos');
+            tbody.style.opacity = '0.5';
+
+            fetch('http://localhost:8080/pedidos/admin/estado/' + id, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ estado: nuevoEstado })
+            })
+            .then(response => {
+                if(response.ok) {
+                    Toast.fire({ icon: 'success', title: `Orden #${id} actualizada a ${nuevoEstado.replace(/_/g, ' ')}` });
+                    cargarPedidos(); 
+                    tbody.style.opacity = '1';
+                } else {
+                    Toast.fire({ icon: 'error', title: 'Error de servidor al guardar.' });
+                    tbody.style.opacity = '1';
+                }
+            })
+            .catch(error => { console.error('Error:', error); Toast.fire({ icon: 'error', title: 'Sin conexión con Spring Boot.' }); tbody.style.opacity = '1'; });
+        }
+    </script>
+</body>
+</html>
